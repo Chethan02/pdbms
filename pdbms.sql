@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2021 at 11:52 AM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.2.29
+-- Generation Time: Feb 03, 2022 at 03:54 PM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -48,6 +48,19 @@ INSERT INTO `doctors` (`did`, `email`, `doctorname`, `dept`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `did` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `feedback` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `patients`
 --
 
@@ -75,8 +88,6 @@ INSERT INTO `patients` (`pid`, `email`, `name`, `gender`, `slot`, `disease`, `ti
 (8, 'patient@gmail.com', 'anees', 'Male', 'evening', 'cold', '22:18:00', '2020-11-05', 'Dermatologists', '9874563210'),
 (9, 'aneesurrehman423@gmail.com', 'anees', 'Male', 'morning', 'cold', '17:27:00', '2020-11-26', 'Anesthesiologists', '9874563210'),
 (10, 'anees@gmail.com', 'anees', 'Male', 'evening', 'fever', '16:25:00', '2020-12-09', 'Cardiologists', '9874589654'),
-(15, 'khushi@gmail.com', 'khushi', 'Female', 'morning', 'corona', '20:42:00', '2021-01-23', 'Anesthesiologists', '9874563210'),
-(16, 'khushi@gmail.com', 'khushi', 'Female', 'evening', 'fever', '15:46:00', '2021-01-31', 'Endocrinologists', '9874587496'),
 (17, 'aneeqah@gmail.com', 'aneeqah', 'Female', 'evening', 'fever', '15:48:00', '2021-01-23', 'Endocrinologists', '9874563210');
 
 --
@@ -153,7 +164,9 @@ INSERT INTO `trigr` (`tid`, `pid`, `email`, `name`, `action`, `timestamp`) VALUE
 (16, 16, 'khushi@gmail.com', 'khushi', 'PATIENT UPDATED', '2021-01-22 15:43:49'),
 (17, 17, 'aneeqah@gmail.com', 'aneeqah', 'PATIENT INSERTED', '2021-01-22 15:44:41'),
 (18, 17, 'aneeqah@gmail.com', 'aneeqah', 'PATIENT UPDATED', '2021-01-22 15:44:52'),
-(19, 17, 'aneeqah@gmail.com', 'aneeqah', 'PATIENT UPDATED', '2021-01-22 15:44:59');
+(19, 17, 'aneeqah@gmail.com', 'aneeqah', 'PATIENT UPDATED', '2021-01-22 15:44:59'),
+(20, 16, 'khushi@gmail.com', 'khushi', 'PATIENT DELETED', '2022-01-19 13:35:03'),
+(21, 15, 'khushi@gmail.com', 'khushi', 'PATIENT DELETED', '2022-01-19 13:35:07');
 
 -- --------------------------------------------------------
 
@@ -176,7 +189,9 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `username`, `usertype`, `email`, `password`) VALUES
 (13, 'anees', 'Doctor', 'anees@gmail.com', 'pbkdf2:sha256:150000$xAKZCiJG$4c7a7e704708f86659d730565ff92e8327b01be5c49a6b1ef8afdf1c531fa5c3'),
 (14, 'aneeqah', 'Patient', 'aneeqah@gmail.com', 'pbkdf2:sha256:150000$Yf51ilDC$028cff81a536ed9d477f9e45efcd9e53a9717d0ab5171d75334c397716d581b8'),
-(15, 'khushi', 'Patient', 'khushi@gmail.com', 'pbkdf2:sha256:150000$BeSHeRKV$a8b27379ce9b2499d4caef21d9d387260b3e4ba9f7311168b6e180a00db91f22');
+(15, 'khushi', 'Patient', 'khushi@gmail.com', 'pbkdf2:sha256:150000$BeSHeRKV$a8b27379ce9b2499d4caef21d9d387260b3e4ba9f7311168b6e180a00db91f22'),
+(16, 'Chethan S', 'Patient', 'chethans2001@gmail.com', 'pbkdf2:sha256:260000$1qOZG950XnKEqE9f$0a3ad2ab18cf4e2cb8897e66d4daa168a7aa92967bc5fb58f1da95636864bb68'),
+(17, 'Chethan', 'Doctor', 'qwerty@gmail.com', 'pbkdf2:sha256:260000$1Ij0F3OYkYzUj7HS$35b23cd79f6f4f25485a9fbc952e9ee60e4136cb5e7a8add6c4dd904117264a6');
 
 --
 -- Indexes for dumped tables
@@ -187,6 +202,13 @@ INSERT INTO `user` (`id`, `username`, `usertype`, `email`, `password`) VALUES
 --
 ALTER TABLE `doctors`
   ADD PRIMARY KEY (`did`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`did`,`pid`),
+  ADD KEY `pid` (`pid`);
 
 --
 -- Indexes for table `patients`
@@ -239,13 +261,24 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT for table `trigr`
 --
 ALTER TABLE `trigr`
-  MODIFY `tid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `tid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`did`) REFERENCES `doctors` (`did`),
+  ADD CONSTRAINT `feedback_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `patients` (`pid`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
